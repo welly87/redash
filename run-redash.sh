@@ -1,0 +1,32 @@
+# https://redash.io/help/open-source/dev-guide/docker
+# https://redash.io/help/open-source/dev-guide/setup
+# https://github.com/getredash/redash/issues/2986
+
+conda create -n redash36 python=3.6
+
+git clone https://github.com/getredash/redash.git
+
+cd redash/
+
+# https://github.com/getredash/redash/issues/2986
+
+npm install
+
+npm run build
+
+npm run start
+
+# docker-compose build worker
+
+# docker-compose build server
+
+docker-compose build
+
+docker-compose run --rm server create_db
+
+docker-compose up -d
+
+# one liner command
+docker-compose build; docker-compose run --rm server create_db; docker-compose up
+
+

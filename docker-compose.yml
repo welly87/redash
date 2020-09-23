@@ -5,7 +5,7 @@ x-redash-service: &redash-service
   build:
     context: .
     args:
-      skip_frontend_build: "true"
+      skip_frontend_build: "false"
   volumes:
     - .:/app
 x-redash-environment: &redash-environment
@@ -48,13 +48,10 @@ services:
     image: redis:3-alpine
     restart: unless-stopped
   postgres:
-    image: postgres:9.5-alpine
-    # The following turns the DB into less durable, but gains significant performance improvements for the tests run (x3
-    # improvement on my personal machine). We should consider moving this into a dedicated Docker Compose configuration for
-    # tests.
-    ports:
-      - "15432:5432"
-    command: "postgres -c fsync=off -c full_page_writes=off -c synchronous_commit=OFF"
+    image: postgres:9.6-alpine
+    env_file: /opt/redash/env
+    volumes:
+      - /Users/wellytambunan/Repos/redash-db:/var/lib/postgresql/data
     restart: unless-stopped
     environment:
       POSTGRES_HOST_AUTH_METHOD: "trust"
@@ -63,3 +60,5 @@ services:
     ports:
       - "1080:80"
     restart: unless-stopped
+
+
