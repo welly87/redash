@@ -14,7 +14,7 @@ npm install
 
 npm run build
 
-npm run start
+# npm run start
 
 # docker-compose build worker
 

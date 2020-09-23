@@ -45,22 +45,7 @@ RUN apt-get update && \
     freetds-dev \
     libsasl2-dev \
     unzip \
-    libsasl2-modules-gssapi-mit && \
-  # MSSQL ODBC Driver:  
-  curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
-  curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list && \
-  apt-get update && \
-  ACCEPT_EULA=Y apt-get install -y msodbcsql17 && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/*
-
-ARG databricks_odbc_driver_url=https://databricks.com/wp-content/uploads/2.6.10.1010-2/SimbaSparkODBC-2.6.10.1010-2-Debian-64bit.zip
-ADD $databricks_odbc_driver_url /tmp/simba_odbc.zip
-RUN unzip /tmp/simba_odbc.zip -d /tmp/ \
-  && dpkg -i /tmp/SimbaSparkODBC-*/*.deb \
-  && echo "[Simba]\nDriver = /opt/simba/spark/lib/64/libsparkodbc_sb64.so" >> /etc/odbcinst.ini \
-  && rm /tmp/simba_odbc.zip \
-  && rm -rf /tmp/SimbaSparkODBC*
+    libsasl2-modules-gssapi-mit 
 
 WORKDIR /app
 

@@ -6,59 +6,41 @@ x-redash-service: &redash-service
     context: .
     args:
       skip_frontend_build: "false"
+  env_file: ./redash_conf/env
   volumes:
     - .:/app
-x-redash-environment: &redash-environment
-  REDASH_LOG_LEVEL: "INFO"
-  REDASH_REDIS_URL: "redis://redis:6379/0"
-  REDASH_DATABASE_URL: "postgresql://postgres@postgres/postgres"
-  REDASH_RATELIMIT_ENABLED: "false"
-  REDASH_MAIL_DEFAULT_SENDER: "redash@example.com"
-  REDASH_MAIL_SERVER: "email"
-  REDASH_ENFORCE_CSRF: "true"
 services:
   server:
     <<: *redash-service
-    command: dev_server
+    # command: server
+    # command: dev_server
     depends_on:
       - postgres
       - redis
     ports:
       - "5000:5000"
       - "5678:5678"
-    environment:
-      <<: *redash-environment
-      PYTHONUNBUFFERED: 0
   scheduler:
     <<: *redash-service
-    command: dev_scheduler
+    command: scheduler
     depends_on:
       - server
-    environment:
-      <<: *redash-environment
   worker:
     <<: *redash-service
-    command: dev_worker
+    command: worker
     depends_on:
       - server
-    environment:
-      <<: *redash-environment
-      PYTHONUNBUFFERED: 0
   redis:
     image: redis:3-alpine
     restart: unless-stopped
   postgres:
     image: postgres:9.6-alpine
-    env_file: /opt/redash/env
+    env_file: ./redash_conf/env
     volumes:
-      - /Users/wellytambunan/Repos/redash-db:/var/lib/postgresql/data
+      - /Users/wellytambunan/Repos/bea-cukai-labs/redash/postgres-data:/var/lib/postgresql/data
     restart: unless-stopped
-    environment:
-      POSTGRES_HOST_AUTH_METHOD: "trust"
   email:
     image: djfarrelly/maildev
     ports:
       - "1080:80"
     restart: unless-stopped
-
-
